@@ -12,7 +12,7 @@ struct Recipe: Decodable {
     let name: String
     let photoUrlSmall: String
     let sourceUrl: String?
-    let uuid: String
+    var id: String
 //    let youtube_url: String
     
     enum CodingKeys: String, CodingKey {
@@ -20,7 +20,7 @@ struct Recipe: Decodable {
         case name
         case photoUrlSmall = "photo_url_small"
         case sourceUrl = "source_url"
-        case uuid = "uuid"
+        case id = "uuid"
     }
     
     init(from decoder: any Decoder) throws {
@@ -29,6 +29,25 @@ struct Recipe: Decodable {
         self.name = try container.decode(String.self, forKey: .name)
         self.photoUrlSmall = try container.decode(String.self, forKey: .photoUrlSmall)
         self.sourceUrl = try container.decodeIfPresent(String.self, forKey: .sourceUrl)
-        self.uuid = try container.decode(String.self, forKey: .uuid)
+        self.id = try container.decode(String.self, forKey: .id)
+    }
+    
+    static private let flagEmojis: [String: String] = [
+        "Croatian": "🇭🇷",
+        "Portuguese": "🇵🇹",
+        "Canadian": "🇨🇦",
+        "Polish": "🇵🇱",
+        "French": "🇫🇷",
+        "Malaysian": "🇲🇾",
+        "British": "🇬🇧",
+        "Greek": "🇬🇷",
+        "Russian": "🇷🇺",
+        "American": "🇺🇸",
+        "Italian": "🇮🇹",
+        "Tunisian": "🇹🇳"
+    ]
+
+    static func flagEmoji(cuisine: String) -> String {
+        return Recipe.flagEmojis[cuisine] ?? "🍽️"
     }
 }

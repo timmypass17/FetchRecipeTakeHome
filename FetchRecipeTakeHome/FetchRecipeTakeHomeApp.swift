@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct FetchRecipeTakeHomeApp: App {
+    let recipeService = RecipeService()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CuisinesView(cuisinesViewModel: CuisinesViewModel(recipeService: recipeService))
         }
     }
 }
