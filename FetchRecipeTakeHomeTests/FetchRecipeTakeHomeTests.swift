@@ -18,7 +18,7 @@ struct FetchRecipeTakeHomeTests {
         
         #expect(recipes.count > 0)
         #expect(recipes.contains { $0.name == "Apam Balik"} )
-        #expect(recipes.contains { $0.uuid == "0c6ca6e7-e32a-4053-b824-1dbf749910d8" })
+        #expect(recipes.contains { $0.id == "0c6ca6e7-e32a-4053-b824-1dbf749910d8" })
     }
     
     @Test func testRecipeDecoding() throws {
@@ -28,7 +28,7 @@ struct FetchRecipeTakeHomeTests {
         #expect(recipe.name == "Apam Balik")
         #expect(recipe.photoUrlSmall == "https://example.com/apam.jpg")
         #expect(recipe.sourceUrl == "https://example.com/recipe")
-        #expect(recipe.uuid == "0c6ca6e7-e32a-4053-b824-1dbf749910d8")
+        #expect(recipe.id == "0c6ca6e7-e32a-4053-b824-1dbf749910d8")
     }
     
     @Test func testRecipeResponseDecoding() throws {

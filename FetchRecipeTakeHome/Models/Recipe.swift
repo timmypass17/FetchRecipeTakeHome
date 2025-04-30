@@ -7,29 +7,31 @@
 
 import Foundation
 
-struct Recipe: Decodable {
+struct Recipe: Decodable, Identifiable {
+    var id: String
     let cuisine: String
     let name: String
     let photoUrlSmall: String
     let sourceUrl: String?
-    var id: String
-//    let youtube_url: String
+    let youtubeUrl: String?
     
     enum CodingKeys: String, CodingKey {
+        case id = "uuid"
         case cuisine
         case name
         case photoUrlSmall = "photo_url_small"
         case sourceUrl = "source_url"
-        case id = "uuid"
+        case youtubeUrl = "youtube_url"
     }
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
         self.cuisine = try container.decode(String.self, forKey: .cuisine)
         self.name = try container.decode(String.self, forKey: .name)
         self.photoUrlSmall = try container.decode(String.self, forKey: .photoUrlSmall)
         self.sourceUrl = try container.decodeIfPresent(String.self, forKey: .sourceUrl)
-        self.id = try container.decode(String.self, forKey: .id)
+        self.youtubeUrl = try container.decodeIfPresent(String.self, forKey: .youtubeUrl)
     }
     
     static private let flagEmojis: [String: String] = [

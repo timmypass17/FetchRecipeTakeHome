@@ -20,9 +20,10 @@ class CuisinesViewModel: ObservableObject {
         }
     }
     
-    private func loadRecipes() async {
+     func loadRecipes() async {
         do {
             let recipes = try await recipeService.getRecipes()
+            recipesByCuisine.removeAll()
             for recipe in recipes {
                 recipesByCuisine[recipe.cuisine, default: []].append(recipe)
             }

@@ -13,7 +13,9 @@ struct FetchRecipeTakeHomeApp: App {
 
     var body: some Scene {
         WindowGroup {
-            CuisinesView(cuisinesViewModel: CuisinesViewModel(recipeService: recipeService))
+            NavigationStack {
+                CuisinesView(cuisinesViewModel: CuisinesViewModel(recipeService: recipeService))
+            }
         }
     }
 }

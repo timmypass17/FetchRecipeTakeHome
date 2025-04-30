@@ -11,9 +11,9 @@ struct CuisinesView: View {
     @StateObject var cuisinesViewModel: CuisinesViewModel
 
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(cuisinesViewModel.recipesByCuisine.sorted(by: { $0.key < $1.key }), id: \.key) { cuisine, recipes in
+        List {
+            ForEach(cuisinesViewModel.recipesByCuisine.sorted(by: { $0.key < $1.key }), id: \.key) { cuisine, recipes in
+                NavigationLink(value: cuisine) {
                     HStack {
                         Text("\(Recipe.flagEmoji(cuisine: cuisine)) \(cuisine)")
                         Spacer()
@@ -22,7 +22,15 @@ struct CuisinesView: View {
                     }
                 }
             }
-            .navigationTitle("Cuisines")
+        }
+        .navigationTitle("Cuisines")
+        .navigationDestination(for: String.self) { cuisine in
+            RecipesView(cuisine: cuisine, recipes: cuisinesViewModel.recipesByCuisine[cuisine] ?? [])
+        }
+        .refreshable {
+            Task {
+                await cuisinesViewModel.loadRecipes()
+            }
         }
     }
 }
