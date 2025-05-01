@@ -32,15 +32,15 @@ struct CuisinesView: View {
 
             Section("All Cuisines") {
                 ForEach(recipesByCuisine.sorted(by: { $0.key < $1.key }), id: \.key) { cuisine, recipes in
-                    NavigationLink(value: cuisine) {
+                    NavigationLink(value: CuisineRoute(cuisine: cuisine, recipes: recipes)) {
                         CuisineCellView(cuisine: cuisine, recipes: recipes)
                     }
                 }
             }
         }
         .navigationTitle("Cuisines")
-        .navigationDestination(for: String.self) { cuisine in
-            RecipesView(cuisine: cuisine, recipes: recipesByCuisine[cuisine] ?? [])
+        .navigationDestination(for: CuisineRoute.self) { cuisineRoute in
+            RecipesView(recipesViewModel: RecipesViewModel(cuisine: cuisineRoute.cuisine, recipes: cuisineRoute.recipes))
         }
         .refreshable {
             Task {
@@ -65,6 +65,13 @@ struct CuisinesView: View {
                 }
             }
         }
+    }
+}
+
+extension CuisinesView {
+    struct CuisineRoute: Hashable {
+        let cuisine: String
+        let recipes: [Recipe]
     }
 }
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Recipe: Decodable, Identifiable {
+struct Recipe: Decodable, Identifiable, Hashable {
     var id: String
     let cuisine: String
     let name: String

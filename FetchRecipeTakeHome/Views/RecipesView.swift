@@ -8,14 +8,10 @@
 import SwiftUI
 
 struct RecipesView: View {
-    @State var isPresentingOptions = false
-    @State var selectedRecipe: Recipe?
-    @State var selectedUrl: URL?
-    let cuisine: String
-    let recipes: [Recipe]
-    
+    @StateObject var recipesViewModel: RecipesViewModel
+
     var body: some View {
-        List(Array(recipes.enumerated()), id: \.offset) { index, recipe in
+        List(Array(recipesViewModel.recipes.enumerated()), id: \.offset) { index, recipe in
             HStack {
                 CachedAsyncImageView(url: URL(string: recipe.photoUrlSmall))
                     .frame(width: 50, height: 50)
@@ -31,8 +27,8 @@ struct RecipesView: View {
                 Spacer()
                 
                 Button {
-                    selectedRecipe = recipe
-                    isPresentingOptions.toggle()
+                    recipesViewModel.selectedRecipe = recipe
+                    recipesViewModel.isPresentingOptions.toggle()
                 } label: {
                     Label("Recipe source", systemImage: "info.circle")
                 }
@@ -41,24 +37,24 @@ struct RecipesView: View {
 
             }
         }
-        .navigationTitle("\(Recipe.flagEmoji(cuisine: cuisine)) \(cuisine) Recipes")
-        .confirmationDialog("Selected \"\(selectedRecipe?.name ?? "recipe")\"",  isPresented: $isPresentingOptions, titleVisibility: .visible) {
+        .navigationTitle("\(Recipe.flagEmoji(cuisine: recipesViewModel.cuisine)) \(recipesViewModel.cuisine) Recipes")
+        .confirmationDialog("Selected \"\(recipesViewModel.selectedRecipe?.name ?? "recipe")\"",  isPresented: $recipesViewModel.isPresentingOptions, titleVisibility: .visible) {
             Button("View Youtube") {
-                if let youtubeUrl = selectedRecipe?.youtubeUrl {
-                    selectedUrl = URL(string: youtubeUrl)
+                if let youtubeUrl = recipesViewModel.selectedRecipe?.youtubeUrl {
+                    recipesViewModel.selectedUrl = URL(string: youtubeUrl)
                 }
             }
             Button("View Website") {
-                if let sourceUrl = selectedRecipe?.sourceUrl {
-                    selectedUrl = URL(string: sourceUrl)
+                if let sourceUrl = recipesViewModel.selectedRecipe?.sourceUrl {
+                    recipesViewModel.selectedUrl = URL(string: sourceUrl)
                 }
             }
-            .disabled(selectedRecipe?.sourceUrl == nil)
+            .disabled(recipesViewModel.selectedRecipe?.sourceUrl == nil)
             Button("Cancel", role: .cancel) {
                 
             }
         }
-        .sheet(item: $selectedUrl) { url in
+        .sheet(item: $recipesViewModel.selectedUrl) { url in
             SafariView(url: url)
         }
     }
