@@ -12,6 +12,7 @@ struct Recipe: Decodable, Identifiable {
     let cuisine: String
     let name: String
     let photoUrlSmall: String
+    let photoUrlLarge: String
     let sourceUrl: String?
     let youtubeUrl: String?
     
@@ -20,6 +21,7 @@ struct Recipe: Decodable, Identifiable {
         case cuisine
         case name
         case photoUrlSmall = "photo_url_small"
+        case photoUrlLarge = "photo_url_large"
         case sourceUrl = "source_url"
         case youtubeUrl = "youtube_url"
     }
@@ -30,6 +32,7 @@ struct Recipe: Decodable, Identifiable {
         self.cuisine = try container.decode(String.self, forKey: .cuisine)
         self.name = try container.decode(String.self, forKey: .name)
         self.photoUrlSmall = try container.decode(String.self, forKey: .photoUrlSmall)
+        self.photoUrlLarge = try container.decode(String.self, forKey: .photoUrlLarge)
         self.sourceUrl = try container.decodeIfPresent(String.self, forKey: .sourceUrl)
         self.youtubeUrl = try container.decodeIfPresent(String.self, forKey: .youtubeUrl)
     }

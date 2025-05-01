@@ -9,7 +9,25 @@ import Foundation
 
 @MainActor
 class CuisinesViewModel: ObservableObject {
-    @Published var recipesByCuisine: [String: [Recipe]] = [:]
+    @Published var state: State = .loading
+    
+    var recipesOfTheWeek: [Recipe] {
+        guard case let .success(recipesByCuisine) = state else { return [] }
+        var recipesOfTheWeek: [Recipe] = []
+        var allRecipes = recipesByCuisine.values.flatMap { $0 }
+
+        while recipesOfTheWeek.count < 10 && !allRecipes.isEmpty {
+            let randomIndex = Int.random(in: 0..<allRecipes.count)
+            let randomRecipe = allRecipes.remove(at: randomIndex)
+            recipesOfTheWeek.append(randomRecipe)
+        }
+        return recipesOfTheWeek
+    }
+    
+    enum State {
+        case loading, success([String: [Recipe]]), failed(String)
+    }
+    
     private let recipeService: RecipeServiceProtocol
     
     init(recipeService: RecipeServiceProtocol) {
@@ -22,17 +40,21 @@ class CuisinesViewModel: ObservableObject {
     
      func loadRecipes() async {
         do {
-            let recipes = try await recipeService.getRecipes()
-            recipesByCuisine.removeAll()
+            state = .loading
+            let recipes = try await recipeService.getRecipes(endpoint: .regular)
+            var recipesByCuisine: [String: [Recipe]] = [:]
             for recipe in recipes {
                 recipesByCuisine[recipe.cuisine, default: []].append(recipe)
             }
             
-            print(Set(recipes.map { $0.cuisine }))
+            guard !recipesByCuisine.isEmpty else {
+                state = .failed("No Recipes Found")
+                return
+            }
+            
+            state = .success(recipesByCuisine)
         } catch {
-            print("Error loading recipes: \(error)")
+            state = .failed(error.localizedDescription)
         }
     }
-    
-    
 }

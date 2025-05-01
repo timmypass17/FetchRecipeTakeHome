@@ -13,12 +13,23 @@ struct FetchRecipeTakeHomeTests {
     
     let recipeService: RecipeServiceProtocol = RecipeService()
 
-    @Test func fetchRestaurants() async throws {
-        let recipes = try await recipeService.getRecipes()
+    @Test func fetchRecipes() async throws {
+        let recipes = try await recipeService.getRecipes(endpoint: .regular)
         
         #expect(recipes.count > 0)
         #expect(recipes.contains { $0.name == "Apam Balik"} )
         #expect(recipes.contains { $0.id == "0c6ca6e7-e32a-4053-b824-1dbf749910d8" })
+    }
+    
+    @Test func fetchRecipesMalformed() async throws {
+        await #expect(throws: Error.self) {
+            _ = try await recipeService.getRecipes(endpoint: .malformed)
+        }
+    }
+    
+    @Test func fetchRecipesEmpty() async throws {
+        let recipes = try await recipeService.getRecipes(endpoint: .empty)
+        #expect(recipes.isEmpty)
     }
     
     @Test func testRecipeDecoding() throws {

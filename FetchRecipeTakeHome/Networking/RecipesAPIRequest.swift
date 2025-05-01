@@ -8,8 +8,28 @@
 import Foundation
 
 struct RecipesAPIRequest: APIRequest {
+    var endpoint: Endpoint = .regular
+    
+    // For testing purposes
+    enum Endpoint: String {
+        case regular
+        case malformed
+        case empty
+        
+        var urlString: String {
+            switch self {
+            case .regular:
+                return "https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"
+            case .malformed:
+                return "https://d3jbb8n5wk0qxi.cloudfront.net/recipes-malformed.json"
+            case .empty:
+                return "https://d3jbb8n5wk0qxi.cloudfront.net/recipes-empty.json"
+            }
+        }
+    }
+    
     var urlRequest: URLRequest {
-        let urlComponents = URLComponents(string: "https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json")!
+        let urlComponents = URLComponents(string: endpoint.urlString)!
         let request = URLRequest(url: urlComponents.url!)
         return request
     }
